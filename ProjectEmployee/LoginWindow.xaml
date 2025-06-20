@@ -1,0 +1,80 @@
+﻿<Window x:Class="ProjectEmployee.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectEmployee"
+        mc:Ignorable="d"
+        Title="LoginWindow"
+        Height="500" Width="850"
+        MinHeight="500" MinWidth="700"
+        Background="#FFE1E4CC"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Left background image -->
+        <Border Grid.Column="0" Background="#FAFAFA">
+            <Image Source="/Image/login-background.jpg" Stretch="UniformToFill"/>
+        </Border>
+
+        <!-- Right login panel -->
+        <Grid Grid.Column="1" Margin="50,30,50,30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,20">
+                <Image Source="/Image/login.jpg" Width="102" Height="104" Margin="0,0,0,10"/>
+                <TextBlock Text="Welcome Back" FontSize="28" FontWeight="Bold" Foreground="#333" TextAlignment="Center"/>
+                <TextBlock Text="Please enter your login credentials below" FontSize="14" Foreground="Gray" TextAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Form -->
+            <StackPanel Grid.Row="1" VerticalAlignment="Center" >
+                <TextBlock Text="Username" FontWeight="SemiBold"/>
+                <TextBox x:Name="txtUsername" Height="21" FontSize="14"/>
+
+                <TextBlock Text="Password" FontWeight="SemiBold" Margin="0,10,0,0"/>
+                <PasswordBox x:Name="txtPassword" Height="24" FontSize="14" PasswordChanged="txtPassword_PasswordChanged"/>
+                <TextBox x:Name="txtPasswordVisible" Height="24" FontSize="14" Visibility="Collapsed" TextChanged="txtPasswordVisible_TextChanged"/>
+
+                <CheckBox Content="Show password" FontSize="12" Margin="0,5,0,0"
+                          Checked="ShowPassword_Checked" Unchecked="ShowPassword_Unchecked"/>
+
+                <!-- Fixed height for error to avoid layout shift -->
+                <TextBlock x:Name="txtError"
+                           Height="20"
+                           Foreground="Red"
+                           FontSize="12"
+                           Visibility="Collapsed"
+                           Margin="0,5,0,0"
+                           TextWrapping="Wrap"/>
+
+                <Button Content="Login"
+                        Height="40"
+                        FontSize="16"
+                        Background="#2E86C1"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Margin="0,15,0,0"
+                        Click="Login_Click"/>
+
+                <TextBlock Text="Forgot password?"
+                           Foreground="Blue"
+                           FontSize="12"
+                           HorizontalAlignment="Right"
+                           Cursor="Hand"
+                           Margin="0,5,0,0"
+                           MouseLeftButtonUp="ForgotPassword_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
