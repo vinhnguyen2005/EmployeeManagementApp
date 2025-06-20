@@ -1,0 +1,151 @@
+﻿<Window x:Class="ProjectEmployee.TeamManagement"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Team Management" 
+        Height="650" Width="1111"
+        WindowStartupLocation="CenterScreen"
+        Background="#F8F9FA">
+    <Window.Resources>
+        <!-- Action Button Style -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#3498DB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2980B9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1F618D"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel Background="#2C3E50" Height="60">
+            <Button Content="← Back to Dashboard"
+                    FontSize="14"
+                    Background="Transparent"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Padding="15,0"
+                    Cursor="Hand"
+                    ToolTip="Go back"
+                    Click="BackToDashboard_Click"/>
+            <TextBlock Text="Manage Team"
+                       VerticalAlignment="Center"
+                       Foreground="White"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Margin="10,0,0,0"/>
+        </DockPanel>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="103*"/>
+                <ColumnDefinition Width="254*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Search & Filter -->
+            <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                <TextBox x:Name="txtSearch"
+                         Width="250"
+                         Height="30"
+                         FontSize="14"
+                         VerticalContentAlignment="Center"
+                         Margin="0,0,10,0"
+                         Padding="10,0"
+                         TextChanged="txtSearch_TextChanged"/>
+
+                <Button Content="🔍 Search"
+                        Width="100"
+                        Height="30"
+                        FontSize="14"
+                        Background="#2980B9"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Click="btnSearch_Click"/>
+            </StackPanel>
+
+            <!-- DataGrid -->
+            <DataGrid x:Name="dgEmployees"
+                      Grid.Row="1"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      IsReadOnly="True"
+                      RowHeight="40"
+                      HeadersVisibility="Column"
+                      AlternatingRowBackground="#ECF0F1"
+                      Background="White"
+                      BorderBrush="#D5DBDB"
+                      Margin="0,40,0,-20"
+                      SelectionMode="Single"
+                      SelectionChanged="dgEmployees_SelectionChanged" Grid.ColumnSpan="2">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="200"/>
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200"/>
+                    <DataGridTextColumn Header="Phone" Binding="{Binding PhoneNumber}" Width="130"/>
+                    <DataGridTextColumn Header="Hire Date" Binding="{Binding HireDate, StringFormat=d}" Width="120"/>
+                    <DataGridTextColumn Header="Job Title" Binding="{Binding JobTitle}" Width="200"/>
+                    <DataGridTextColumn Header="Salary" Binding="{Binding Salary, StringFormat=C}" Width="100"/>
+                    <DataGridTextColumn Header="Department" Binding="{Binding Department}" Width="120"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Vertical" Margin="20,0,0,10">
+                <TextBlock x:Name="txtSelectedEmployee"
+               FontSize="16"
+               FontWeight="SemiBold"
+               Foreground="DarkSlateBlue"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Footer Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,20,10">
+            <Button Content="🔄 Refresh"
+                    Width="130" Height="35"
+                    Margin="5"
+                    Style="{StaticResource ActionButtonStyle}"
+                    Background="#3498DB"
+                    Click="Refresh_Click"/>
+            <Button Content="➕ New Request"
+                    Width="140" Height="35"
+                    Margin="5"
+                    Style="{StaticResource ActionButtonStyle}"
+                    Background="#2ECC71"
+                    Click="NewRequest_Click"/>
+            <Button Content="📁 View My Requests"
+                    Width="160" Height="35"
+                    Margin="5"
+                    Style="{StaticResource ActionButtonStyle}"
+                    Background="#9B59B6"
+                    Click="ViewRequests_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
