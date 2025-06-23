@@ -50,22 +50,6 @@ namespace ProjectEmployee
             statsWindow.Show();
         }
 
-        private void ViewDependents_Click(object sender, RoutedEventArgs e)
-        {
-            var myEmployees = _context.Employees
-                .Where(e => e.ManagerId == _currentUser.EmployeeId)
-                .Select(e => e.EmployeeId)
-                .ToList();
-
-            var dependents = _context.Dependents
-                .Where(d => myEmployees.Contains(d.EmployeeId))
-                .Select(d => $"{d.FirstName} {d.LastName} - {d.Relationship}")
-                .ToList();
-
-            string result = string.Join("\n", dependents);
-            MessageBox.Show(result.Length > 0 ? result : "No dependents found.", "Dependents");
-        }
-
         private void Reports_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Coming soon: Reports dashboard", "Reports");
@@ -80,6 +64,27 @@ namespace ProjectEmployee
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void AssignTask_Click(object sender, RoutedEventArgs e)
+        {
+            int? managerId = _currentUser.EmployeeId;
+
+            if (managerId.HasValue)
+            {
+                var employees = _context.Employees.Where(e => e.ManagerId == managerId.Value).ToList();
+                if (employees.Count == 0)
+                {
+                    MessageBox.Show("No employees found for task assignment.");
+                    return;
+                }
+                var assignTaskWindow = new AssignTaskWindow(_currentUser, _context, employees);
+                assignTaskWindow.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Current user does not have an associated Employee ID.");
+            }
         }
     }
 }

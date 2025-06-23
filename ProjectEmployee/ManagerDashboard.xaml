@@ -139,10 +139,10 @@
                                 Style="{StaticResource ModernSidebarButtonStyle}" 
                                 Click="DepartmentStats_Click"
                                 ToolTip="View department statistics"/>
-                        <Button Content="👨‍👩‍👧‍👦 View Dependents" 
+                        <Button Content="👨‍👩‍👧‍👦 Assign Task" 
                                 Style="{StaticResource ModernSidebarButtonStyle}" 
-                                Click="ViewDependents_Click"
-                                ToolTip="View employee dependents"/>
+                                Click="AssignTask_Click"
+                                ToolTip="Assign tasks to your employees"/>
                         <Button Content="📈 Reports" 
                                 Style="{StaticResource ModernSidebarButtonStyle}" 
                                 Click="Reports_Click"
@@ -274,10 +274,10 @@
                                     Style="{StaticResource ActionButtonStyle}"
                                     Background="#E67E22"
                                     Click="DepartmentStats_Click"/>
-                            <Button Content="👨‍👩‍👧‍👦 Check Dependents" 
+                            <Button Content="👨‍👩‍👧‍👦 Assign Task" 
                                     Style="{StaticResource ActionButtonStyle}"
                                     Background="#9B59B6"
-                                    Click="ViewDependents_Click"/>
+                                    Click="AssignTask_Click"/>
                             <Button Content="📈 Generate Reports" 
                                     Style="{StaticResource ActionButtonStyle}"
                                     Background="#27AE60"
