@@ -1,0 +1,20 @@
+# Build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+
+# Visual Studio files
+.vs/
+
+# Build results
+*.exe
+*.dll
+*.pdb
+
+# Others
+TestResults/
+*.log
+*.tmp

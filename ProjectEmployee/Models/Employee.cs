@@ -5,6 +5,18 @@ namespace ProjectEmployee.Models;
 
 public partial class Employee
 {
+    private ICollection<TaskAssign> tasks;
+
+    public Employee()
+    {
+        Dependents = new List<Dependent>();
+        InverseManager = new List<Employee>();
+        RequestsSent = new List<Request>();
+        RequestsReceived = new List<Request>();
+        Tasks = new List<TaskAssign>();
+        Users = new List<User>();
+    }
+
     public int EmployeeId { get; set; }
 
     public string? FirstName { get; set; }
@@ -27,17 +39,22 @@ public partial class Employee
 
     public virtual Department? Department { get; set; }
 
-    public virtual ICollection<Dependent> Dependents { get; set; } = new List<Dependent>();
+    public virtual ICollection<Dependent> Dependents { get; set; }
 
-    public virtual ICollection<Employee> InverseManager { get; set; } = new List<Employee>();
+    public virtual ICollection<Employee> InverseManager { get; set; }
 
-    public virtual ICollection<Request> RequestsSent { get; set; } = new List<Request>();
-    public virtual ICollection<Request> RequestsReceived { get; set; } = new List<Request>();
-
+    public virtual ICollection<Request> RequestsSent { get; set; }
+    public virtual ICollection<Request> RequestsReceived { get; set; }
 
     public virtual Job Job { get; set; } = null!;
 
     public virtual Employee? Manager { get; set; }
 
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public virtual ICollection<User> Users { get; set; }
+
+    public ICollection<TaskAssign> Tasks
+    {
+        get => tasks;
+        set => tasks = value;
+    }
 }
