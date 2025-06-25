@@ -4,7 +4,7 @@
         Title="Team Management" 
         Height="650" Width="1111"
         WindowStartupLocation="CenterScreen"
-        Background="#F8F9FA">
+        Background="#F5F7FA">
     <Window.Resources>
         <!-- Action Button Style -->
         <Style x:Key="ActionButtonStyle" TargetType="Button">
@@ -35,34 +35,39 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid>
+
+    <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <DockPanel Background="#2C3E50" Height="60">
-            <Button Content="← Back to Dashboard"
-                    FontSize="14"
-                    Background="Transparent"
-                    Foreground="White"
-                    BorderThickness="0"
-                    Padding="15,0"
-                    Cursor="Hand"
-                    ToolTip="Go back"
-                    Click="BackToDashboard_Click"/>
-            <TextBlock Text="Manage Team"
-                       VerticalAlignment="Center"
-                       Foreground="White"
-                       FontSize="20"
-                       FontWeight="Bold"
-                       Margin="10,0,0,0"/>
-        </DockPanel>
+        <!-- Modern Header -->
+        <Border Grid.Row="0" CornerRadius="15" Padding="30,25" Margin="0,0,0,30">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#667eea" Offset="0"/>
+                    <GradientStop Color="#764ba2" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect Color="#40000000" Direction="270" ShadowDepth="4" BlurRadius="12" Opacity="0.3"/>
+            </Border.Effect>
+            <DockPanel>
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="👥 Team Management Dashboard" 
+                              FontSize="26" FontWeight="Bold" Foreground="White"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="Manage your team members and requests" 
+                              FontSize="15" Foreground="#E8E8E8" 
+                              HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
 
         <!-- Main Content -->
-        <Grid Grid.Row="1" Margin="20">
+        <Grid Grid.Row="1" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="103*"/>
                 <ColumnDefinition Width="254*"/>
@@ -76,22 +81,67 @@
             <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2">
                 <TextBox x:Name="txtSearch"
                          Width="250"
-                         Height="30"
+                         Height="35"
                          FontSize="14"
                          VerticalContentAlignment="Center"
                          Margin="0,0,10,0"
-                         Padding="10,0"
-                         TextChanged="txtSearch_TextChanged"/>
+                         Padding="12,0"
+                         BorderBrush="#E2E8F0"
+                         BorderThickness="1"
+                         Background="White"
+                         TextChanged="txtSearch_TextChanged">
+                    <TextBox.Template>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border Background="{TemplateBinding Background}" 
+                                   BorderBrush="{TemplateBinding BorderBrush}" 
+                                   BorderThickness="{TemplateBinding BorderThickness}" 
+                                   CornerRadius="8">
+                                <ScrollViewer x:Name="PART_ContentHost" 
+                                            VerticalAlignment="Center" 
+                                            Margin="{TemplateBinding Padding}"/>
+                            </Border>
+                        </ControlTemplate>
+                    </TextBox.Template>
+                </TextBox>
 
                 <Button Content="🔍 Search"
-                        Width="100"
-                        Height="30"
+                        Width="120"
+                        Height="35"
                         FontSize="14"
-                        Background="#2980B9"
+                        FontWeight="SemiBold"
                         Foreground="White"
                         BorderThickness="0"
                         Cursor="Hand"
-                        Click="btnSearch_Click"/>
+                        Click="btnSearch_Click">
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#3B82F6" Offset="0"/>
+                            <GradientStop Color="#2563EB" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#40000000" Direction="270" ShadowDepth="2" BlurRadius="6" Opacity="0.25"/>
+                                </Border.Effect>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                <GradientStop Color="#2563EB" Offset="0"/>
+                                                <GradientStop Color="#1D4ED8" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </StackPanel>
 
             <!-- DataGrid -->
@@ -127,25 +177,114 @@
         </Grid>
 
         <!-- Footer Buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,20,10">
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
             <Button Content="🔄 Refresh"
-                    Width="130" Height="35"
-                    Margin="5"
-                    Style="{StaticResource ActionButtonStyle}"
-                    Background="#3498DB"
-                    Click="Refresh_Click"/>
+                    Width="130" Height="40"
+                    Margin="8,0"
+                    FontWeight="SemiBold" FontSize="14"
+                    Foreground="White" BorderThickness="0" Cursor="Hand"
+                    Click="Refresh_Click">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#3B82F6" Offset="0"/>
+                        <GradientStop Color="#2563EB" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#40000000" Direction="270" ShadowDepth="2" BlurRadius="8" Opacity="0.3"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#2563EB" Offset="0"/>
+                                            <GradientStop Color="#1D4ED8" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
             <Button Content="➕ New Request"
-                    Width="140" Height="35"
-                    Margin="5"
-                    Style="{StaticResource ActionButtonStyle}"
-                    Background="#2ECC71"
-                    Click="NewRequest_Click"/>
+                    Width="140" Height="40"
+                    Margin="8,0"
+                    FontWeight="SemiBold" FontSize="14"
+                    Foreground="White" BorderThickness="0" Cursor="Hand"
+                    Click="NewRequest_Click">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#10B981" Offset="0"/>
+                        <GradientStop Color="#059669" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#40000000" Direction="270" ShadowDepth="2" BlurRadius="8" Opacity="0.3"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#047857" Offset="0"/>
+                                            <GradientStop Color="#065F46" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
             <Button Content="📁 View My Requests"
-                    Width="160" Height="35"
-                    Margin="5"
-                    Style="{StaticResource ActionButtonStyle}"
-                    Background="#9B59B6"
-                    Click="ViewRequests_Click"/>
+                    Width="160" Height="40"
+                    Margin="8,0"
+                    FontWeight="SemiBold" FontSize="14"
+                    Foreground="White" BorderThickness="0" Cursor="Hand"
+                    Click="ViewRequests_Click">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#8B5CF6" Offset="0"/>
+                        <GradientStop Color="#A855F7" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#40000000" Direction="270" ShadowDepth="2" BlurRadius="8" Opacity="0.3"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#7C3AED" Offset="0"/>
+                                            <GradientStop Color="#9333EA" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </StackPanel>
     </Grid>
 </Window>

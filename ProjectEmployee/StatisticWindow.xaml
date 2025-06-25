@@ -82,7 +82,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid Margin="20">
+    <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -90,26 +90,35 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <Border Grid.Row="0" Style="{StaticResource CardStyle}" Margin="0,0,0,15">
+        <!-- Modern Header -->
+        <Border Grid.Row="0" CornerRadius="15" Padding="30,25" Margin="0,0,0,30">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#667eea" Offset="0"/>
+                    <GradientStop Color="#764ba2" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect Color="#40000000" Direction="270" ShadowDepth="4" BlurRadius="12" Opacity="0.3"/>
+            </Border.Effect>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0">
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
                     <TextBlock Text="📊 Statistics Dashboard" 
-                               FontSize="28" 
+                               FontSize="26" 
                                FontWeight="Bold" 
-                               Foreground="#2C3E50"/>
+                               Foreground="White"/>
                     <TextBlock Text="Comprehensive insights and analytics for your team management" 
-                               FontSize="16" 
-                               Foreground="#7F8C8D"
-                               Margin="0,5,0,0"/>
+                               FontSize="15" 
+                               Foreground="#E8E8E8"
+                               Margin="0,8,0,0"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="🔄 Refresh" 
                             Style="{StaticResource ActionButtonStyle}" 
                             Background="#27AE60"

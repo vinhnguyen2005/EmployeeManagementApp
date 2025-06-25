@@ -50,11 +50,6 @@ namespace ProjectEmployee
             statsWindow.Show();
         }
 
-        private void Reports_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Coming soon: Reports dashboard", "Reports");
-        }
-
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
             new LoginWindow().Show();
@@ -86,5 +81,13 @@ namespace ProjectEmployee
                 MessageBox.Show("Current user does not have an associated Employee ID.");
             }
         }
+
+        private void PerformanceReviews_Click(object sender, RoutedEventArgs e)
+        {
+            var reviewWindow = new PerformanceReviewWindow(_currentUser, _context);
+            reviewWindow.ShowDialog();
+
+        }
+
     }
 }
