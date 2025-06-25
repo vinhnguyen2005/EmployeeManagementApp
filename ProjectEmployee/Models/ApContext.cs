@@ -329,6 +329,10 @@ public partial class ApContext : DbContext
                 .HasForeignKey(d => d.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__tasks__employee_id");
+            entity.Property(e => e.ReviewComment)
+                .HasColumnName("review_comment")
+                .HasMaxLength(500);
+
         });
 
         OnModelCreatingPartial(modelBuilder);

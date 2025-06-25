@@ -143,9 +143,9 @@
                                 Style="{StaticResource ModernSidebarButtonStyle}" 
                                 Click="AssignTask_Click"
                                 ToolTip="Assign tasks to your employees"/>
-                        <Button Content="📈 Reports" 
+                        <Button Content="📈 Review Performances" 
                                 Style="{StaticResource ModernSidebarButtonStyle}" 
-                                Click="Reports_Click"
+                                Click="PerformanceReviews_Click"
                                 ToolTip="Generate reports"/>
                         <Separator Margin="5,20,5,10" Background="#34495E"/>
                         <Button Content="⚙️ Settings" 
@@ -278,10 +278,10 @@
                                     Style="{StaticResource ActionButtonStyle}"
                                     Background="#9B59B6"
                                     Click="AssignTask_Click"/>
-                            <Button Content="📈 Generate Reports" 
+                            <Button Content="🗣️Performance Reviews" 
                                     Style="{StaticResource ActionButtonStyle}"
                                     Background="#27AE60"
-                                    Click="Reports_Click"/>
+                                    Click="PerformanceReviews_Click"/>
                         </UniformGrid>
 
                         <TextBlock Text="💡 Tip: Use the sidebar navigation for quick access to all features" 
