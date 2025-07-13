@@ -1,0 +1,180 @@
+﻿<Window x:Class="ProjectEmployee.HR.AddEditEmployeeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add/Edit Employee" Height="600" Width="800"
+        WindowStartupLocation="CenterOwner" Background="#F8FAFC"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Style x:Key="FormLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#4B5563"/>
+            <Setter Property="Margin" Value="0,15,0,5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="FormTextBoxStyle" TargetType="TextBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#10B981"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="FormComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="10,8"/>
+        </Style>
+
+        <Style x:Key="FormDatePickerStyle" TargetType="DatePicker">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#10B981"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#059669"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F9FAFB"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock x:Name="txtTitle" Grid.Row="0" 
+                   Text="Employee Profile" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   Foreground="#1F2937" 
+                   Margin="0,0,0,25"/>
+
+        <!-- Form Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Left Column -->
+                <StackPanel Grid.Column="0" Grid.Row="0">
+                    <TextBlock Text="First Name" Style="{StaticResource FormLabelStyle}"/>
+                    <TextBox x:Name="txtFirstName" Style="{StaticResource FormTextBoxStyle}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="0" Grid.Row="1">
+                    <TextBlock Text="Email Address" Style="{StaticResource FormLabelStyle}"/>
+                    <TextBox x:Name="txtEmail" Style="{StaticResource FormTextBoxStyle}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="0" Grid.Row="2">
+                    <TextBlock Text="Department" Style="{StaticResource FormLabelStyle}"/>
+                    <ComboBox x:Name="cboDepartment" Style="{StaticResource FormComboBoxStyle}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="0" Grid.Row="3">
+                    <TextBlock Text="Manager" Style="{StaticResource FormLabelStyle}"/>
+                    <ComboBox x:Name="cboManager" Style="{StaticResource FormComboBoxStyle}"/>
+                </StackPanel>
+
+                <!-- Right Column -->
+                <StackPanel Grid.Column="2" Grid.Row="0">
+                    <TextBlock Text="Last Name" Style="{StaticResource FormLabelStyle}"/>
+                    <TextBox x:Name="txtLastName" Style="{StaticResource FormTextBoxStyle}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Grid.Row="1">
+                    <TextBlock Text="Phone Number" Style="{StaticResource FormLabelStyle}"/>
+                    <TextBox x:Name="txtPhoneNumber" Style="{StaticResource FormTextBoxStyle}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Grid.Row="2">
+                    <TextBlock Text="Job Title" Style="{StaticResource FormLabelStyle}"/>
+                    <ComboBox x:Name="cboJob" Style="{StaticResource FormComboBoxStyle}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Grid.Row="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Hire Date" Style="{StaticResource FormLabelStyle}"/>
+                            <DatePicker x:Name="dpHireDate" Style="{StaticResource FormDatePickerStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Salary" Style="{StaticResource FormLabelStyle}"/>
+                            <TextBox x:Name="txtSalary" Style="{StaticResource FormTextBoxStyle}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,25,0,0">
+            <Button Content="Cancel" 
+                    IsCancel="True" 
+                    Width="120" 
+                    Height="40" 
+                    Margin="0,0,10,0"
+                    Style="{StaticResource SecondaryButtonStyle}"/>
+            <Button Content="Save Employee" 
+                    Click="Save_Click" 
+                    Width="150" 
+                    Height="40"
+                    Style="{StaticResource PrimaryButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</Window>

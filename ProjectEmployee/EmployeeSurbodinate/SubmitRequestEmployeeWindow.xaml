@@ -1,0 +1,61 @@
+﻿<Window x:Class="ProjectEmployee.EmployeeSurbodinate.SubmitRequestEmployeeWindow"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Submit a New Request" Height="450" Width="500"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#F5F7FA">
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Create New Request" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,20"/>
+
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Request Type" FontWeight="Medium" Margin="0,0,0,5"/>
+            <ComboBox x:Name="cbRequestType" SelectionChanged="CbRequestType_SelectionChanged">
+                <ComboBoxItem Content="Leave"/>
+                <ComboBoxItem Content="Work From Home"/>
+                <ComboBoxItem Content="Equipment"/>
+                <ComboBoxItem Content="Other"/>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel x:Name="pnlOtherType" Grid.Row="2" Margin="0,10,0,0" Visibility="Collapsed">
+            <TextBlock Text="Please specify other request type" FontWeight="Medium" Margin="0,0,0,5"/>
+            <TextBox x:Name="txtOtherType"/>
+        </StackPanel>
+
+        <StackPanel x:Name="pnlDatePickers" Grid.Row="3" Margin="0,15,0,0" Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock Text="Start Date" FontWeight="Medium" Margin="0,0,0,5"/>
+                    <DatePicker x:Name="dpStartDate"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <TextBlock Text="End Date" FontWeight="Medium" Margin="0,0,0,5"/>
+                    <DatePicker x:Name="dpEndDate"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4" Margin="0,15,0,0">
+            <TextBlock Text="Description / Reason" FontWeight="Medium" Margin="0,0,0,5"/>
+            <TextBox x:Name="txtDescription" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" VerticalScrollBarVisibility="Auto"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Submit" Width="100" Height="35" Margin="10,0,0,0" Click="Submit_Click"/>
+            <Button Content="Cancel" Width="100" Height="35" Margin="10,0,0,0" IsCancel="True" Click="Cancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
