@@ -1,0 +1,14 @@
+﻿<Window x:Class="ProjectEmployee.ReviewCommentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Review Comment" Height="250" Width="400"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="20">
+        <StackPanel>
+            <TextBlock Text="Enter Review Comment:" Margin="0,0,0,5"/>
+            <TextBox x:Name="txtComment" Height="100" AcceptsReturn="True" TextWrapping="Wrap"/>
+            <Button Content="💬 Save" Height="35" Margin="0,10,0,0"
+                    Click="SaveButton_Click" Background="#9B59B6" Foreground="White"/>
+        </StackPanel>
+    </Grid>
+</Window>

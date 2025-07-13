@@ -21,7 +21,10 @@ namespace ProjectEmployee.NewFolder
         public string TaskScoreColor { get; set; }
         public string AvgScoreLabel { get; set; }
         public string AvgScoreColor { get; set; }
-
+        public decimal AvgScore { get; set; }
+        public DateTime Deadline { get; set; }
+        public DateTime? CompletedDate { get; set; }
+        public string CompletionInfo { get; set; } 
         public bool IsFirstTaskForEmployee { get; set; }
     }
 }
