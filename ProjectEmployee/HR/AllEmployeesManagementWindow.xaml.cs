@@ -1,24 +1,14 @@
-﻿using System;
+﻿using ProjectEmployee.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Microsoft.EntityFrameworkCore;
-using ProjectEmployee.Models;
+using ProjectEmployee.Services;
 
 namespace ProjectEmployee.HR
 {
-    /// <summary>
-    /// Interaction logic for AllEmployeesManagementWindow.xaml
-    /// </summary>
     public partial class AllEmployeesManagementWindow : Window
     {
         private readonly ApContext _context;
@@ -34,7 +24,7 @@ namespace ProjectEmployee.HR
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             PopulateFilters();
-            LoadEmployeeData();
+            LoadEmployees();
         }
 
         private void PopulateFilters()
@@ -45,24 +35,26 @@ namespace ProjectEmployee.HR
             cboDepartmentFilter.DisplayMemberPath = "DepartmentName";
             cboDepartmentFilter.SelectedValuePath = "DepartmentId";
             cboDepartmentFilter.SelectedIndex = 0;
-
             var jobs = _context.Jobs.OrderBy(j => j.JobTitle).ToList();
             jobs.Insert(0, new Job { JobId = 0, JobTitle = "All Job Titles" });
             cboJobFilter.ItemsSource = jobs;
             cboJobFilter.DisplayMemberPath = "JobTitle";
             cboJobFilter.SelectedValuePath = "JobId";
             cboJobFilter.SelectedIndex = 0;
+            cboRoleFilter.ItemsSource = new List<string> { "All Roles", "Managers", "Employees" };
+            cboRoleFilter.SelectedIndex = 0;
+            cboSortBy.ItemsSource = new List<string> { "Default (Name A-Z)", "Salary (High to Low)", "Salary (Low to High)" };
+            cboSortBy.SelectedIndex = 0;
         }
 
-        private void LoadEmployeeData()
+        private void LoadEmployees()
         {
+            if (!IsLoaded) return;
+
             try
             {
-                var query = _context.Employees
-                    .Include(e => e.Department)
-                    .Include(e => e.Job)
-                    .Include(e => e.Manager)
-                    .Where(e => e.Department.DepartmentId != 4);
+                var query = _context.Employees.AsQueryable();
+                query = query.Where(e => e.Department != null && e.Department.DepartmentName != "Human Resources");
                 if (chkShowInactive.IsChecked == false)
                 {
                     query = query.Where(e => e.IsActive == true);
@@ -71,32 +63,57 @@ namespace ProjectEmployee.HR
                 {
                     query = query.Where(e => e.DepartmentId == deptId);
                 }
-
                 if (cboJobFilter.SelectedValue is int jobId && jobId > 0)
                 {
                     query = query.Where(e => e.JobId == jobId);
                 }
+
+                if (cboRoleFilter.SelectedItem is string selectedRole)
+                {
+                    if (selectedRole == "Managers")
+                    {
+                        query = query.Where(e => e.InverseManager.Any());
+                    }
+                    else if (selectedRole == "Employees")
+                    {
+                        query = query.Where(e => !e.InverseManager.Any());
+                    }
+                }
+
                 string searchTerm = txtSearch.Text.ToLower();
                 if (!string.IsNullOrEmpty(searchTerm))
                 {
                     query = query.Where(e =>
-                            (e.FirstName + " " + e.LastName).ToLower().Contains(searchTerm) ||
-                            e.Email.ToLower().Contains(searchTerm) ||
-                            (e.PhoneNumber != null && e.PhoneNumber.Contains(searchTerm)) ||
-                            e.Job.JobTitle.ToLower().Contains(searchTerm) ||
-                            e.Department.DepartmentName.ToLower().Contains(searchTerm)
-                        );
+                        (e.FirstName + " " + e.LastName).ToLower().Contains(searchTerm) ||
+                        e.Email.ToLower().Contains(searchTerm)
+                    );
+                }
+                string sortBy = (cboSortBy.SelectedItem as string) ?? "Default (Name A-Z)";
+                switch (sortBy)
+                {
+                    case "Salary (High to Low)":
+                        query = query.OrderByDescending(e => e.Salary);
+                        break;
+                    case "Salary (Low to High)":
+                        query = query.OrderBy(e => e.Salary);
+                        break;
+                    default:
+                        query = query.OrderBy(e => e.FirstName);
+                        break;
                 }
 
                 var employees = query
-                    .OrderBy(e => e.FirstName)
+                    .Include(e => e.Department)
+                    .Include(e => e.Job)
+                    .Include(e => e.Manager)
                     .Select(e => new
                     {
                         e.EmployeeId,
                         FullName = e.FirstName + " " + e.LastName,
                         e.Email,
-                        DepartmentName = e.Department.DepartmentName,
-                        JobTitle = e.Job.JobTitle,
+                        DepartmentName = e.Department != null ? e.Department.DepartmentName : "N/A",
+                        JobTitle = e.Job != null ? e.Job.JobTitle : "N/A",
+                        e.Salary,
                         ManagerName = e.Manager != null ? (e.Manager.FirstName + " " + e.Manager.LastName) : "N/A",
                         Status = e.IsActive ? "Active" : "Inactive"
                     }).ToList();
@@ -105,59 +122,18 @@ namespace ProjectEmployee.HR
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                MessageBox.Show($"An error occurred while loading employee data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void Filter_Changed(object sender, RoutedEventArgs e)
         {
-            LoadEmployeeData();
+            LoadEmployees();
         }
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            LoadEmployeeData();
-        }
-
-
-        private void Deactivate_Click(object sender, RoutedEventArgs e)
-        {
-            if ((sender as Button)?.DataContext is object item)
-            {
-                var empId = (int)item.GetType().GetProperty("EmployeeId")?.GetValue(item);
-                var employee = _context.Employees.Find(empId);
-                if (employee == null)
-                {
-                    MessageBox.Show("Employee not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                var result = MessageBox.Show($"Are you sure you want to deactivate {employee.FirstName} {employee.LastName}?",
-                                                  "Confirm Deactivation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.Yes)
-                {
-                    employee.IsActive = false;
-                    _context.SaveChanges();
-                    LoadEmployeeData();
-                }
-            }
-        }
-
-        private void Add_Click(object sender, RoutedEventArgs e)
-        {
-            var addEditWindow = new AddEditEmployeeWindow(null);
-            addEditWindow.ShowDialog();
-            LoadEmployeeData();
-        }
-
-        private void Edit_Click(object sender, RoutedEventArgs e)
-        {
-            if ((sender as Button)?.DataContext is object item)
-            {
-                var empId = (int)item.GetType().GetProperty("EmployeeId").GetValue(item);
-                var addEditWindow = new AddEditEmployeeWindow(empId);
-                addEditWindow.ShowDialog();
-                LoadEmployeeData();
-            }
+            LoadEmployees();
         }
 
         private void ClearFilters_Click(object sender, RoutedEventArgs e)
@@ -165,9 +141,72 @@ namespace ProjectEmployee.HR
             txtSearch.Clear();
             cboDepartmentFilter.SelectedIndex = 0;
             cboJobFilter.SelectedIndex = 0;
+            cboRoleFilter.SelectedIndex = 0;
+            cboSortBy.SelectedIndex = 0;
             chkShowInactive.IsChecked = false;
-            LoadEmployeeData();
         }
 
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            var addEditWindow = new AddEditEmployeeWindow(null, _currentUser);
+            addEditWindow.ShowDialog();
+            LoadEmployees();
+        }
+
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            if ((sender as Button)?.DataContext is object item)
+            {
+                var empId = (int)item.GetType().GetProperty("EmployeeId").GetValue(item);
+                var addEditWindow = new AddEditEmployeeWindow(empId, _currentUser);
+                addEditWindow.ShowDialog();
+                LoadEmployees();
+            }
+        }
+
+
+        private void Deactivate_Click(object sender, RoutedEventArgs e)
+        {
+            if ((sender as Button)?.DataContext is object item)
+            {
+                var empId = (int)item.GetType().GetProperty("EmployeeId").GetValue(item);
+                var employee = _context.Employees
+                                    .Include(emp => emp.InverseManager)
+                                    .FirstOrDefault(emp => emp.EmployeeId == empId);
+
+                if (employee == null) return;
+
+                bool isManager = employee.InverseManager.Any();
+
+                if (isManager)
+                {
+                    var reassignWindow = new ReassignManagerWindow(employee, _currentUser);
+                    reassignWindow.Owner = this;
+                    reassignWindow.ShowDialog();
+                }
+                else
+                {
+                    var result = MessageBox.Show($"Are you sure you want to deactivate {employee.FullName}?",
+                                                 "Confirm Deactivation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        employee.IsActive = false;
+                        _context.SaveChanges();
+                    }
+                    AuditLogger.Log("Deactivate Employee", _currentUser, $"Deactivated employee: {employee.FullName}");
+                }
+                LoadEmployees();
+            }
+        }
+
+        private void ViewProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if ((sender as Button)?.DataContext is object item)
+            {
+                var empId = (int)item.GetType().GetProperty("EmployeeId").GetValue(item);
+                var profileWindow = new EmployeeProfileWindow(empId);
+                profileWindow.ShowDialog();
+            }
+        }
     }
 }

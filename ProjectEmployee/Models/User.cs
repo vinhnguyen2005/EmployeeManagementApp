@@ -16,6 +16,7 @@ namespace ProjectEmployee.Models
         public int? EmployeeId { get; set; }
         public DateTime? CreatedAt { get; set; }
         public virtual Employee? Employee { get; set; }
+        public bool IsLocked { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

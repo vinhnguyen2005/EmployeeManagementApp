@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjectEmployee.Models;
 
@@ -18,6 +19,8 @@ public partial class Location
     public string CountryId { get; set; } = null!;
 
     public virtual Country Country { get; set; } = null!;
+    [NotMapped]
+    public string FullAddress => $"{StreetAddress}, {City}";
 
     public virtual ICollection<Department> Departments { get; set; } = new List<Department>();
 }

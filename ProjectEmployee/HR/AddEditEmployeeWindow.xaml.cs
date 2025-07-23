@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ProjectEmployee.Models;
+using ProjectEmployee.Services;
 
 namespace ProjectEmployee.HR
 {
@@ -22,12 +23,13 @@ namespace ProjectEmployee.HR
     {
         private readonly ApContext _context;
         private readonly Employee _employeeToEdit;
-
-        public AddEditEmployeeWindow(int? employeeId)
+        private readonly User _currentUser;
+        public AddEditEmployeeWindow(int? employeeId, User currentUser)
         {
             InitializeComponent();
             _context = new ApContext();
             PopulateComboBoxes();
+            _currentUser = currentUser; 
 
             if (employeeId.HasValue)
             {
@@ -102,12 +104,22 @@ namespace ProjectEmployee.HR
 
             try
             {
-                if (_employeeToEdit.EmployeeId == 0)
+                bool isNewEmployee = (_employeeToEdit.EmployeeId == 0);
+
+                if (isNewEmployee)
                 {
                     _context.Employees.Add(_employeeToEdit);
                 }
                 _context.SaveChanges();
                 MessageBox.Show("Employee data saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (isNewEmployee)
+                {
+                    AuditLogger.Log("Create Employee", _currentUser, $"Created new employee: {_employeeToEdit.FullName} (ID: {_employeeToEdit.EmployeeId})");
+                }
+                else
+                {
+                    AuditLogger.Log("Update Employee", _currentUser, $"Updated profile for employee: {_employeeToEdit.FullName} (ID: {_employeeToEdit.EmployeeId})");
+                }
                 this.Close();
             }
             catch (Exception ex)

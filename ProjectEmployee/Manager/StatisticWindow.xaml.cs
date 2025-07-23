@@ -30,7 +30,7 @@ namespace ProjectEmployee
             var employees = _context.Employees
                 .Include(e => e.Department)
                 .Include(e => e.Job)
-                .Where(e => e.ManagerId == _currentUser.EmployeeId)
+                .Where(e => e.ManagerId == _currentUser.EmployeeId && e.IsActive)
                 .ToList();
 
             decimal totalSalary = employees.Sum(e => e.Salary);

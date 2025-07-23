@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ProjectEmployee.Models;
 using Microsoft.EntityFrameworkCore;
+using ProjectEmployee.EmployeeSurbodinate;
 
 namespace ProjectEmployee.HR
 {
@@ -23,6 +24,7 @@ namespace ProjectEmployee.HR
     {
         public class RequestSummaryViewModel
         {
+            public int RequestId { get; set; }
             public string RequestType { get; set; }
             public string OriginatorName { get; set; }
             public DateTime CreatedAt { get; set; }
@@ -36,7 +38,31 @@ namespace ProjectEmployee.HR
             InitializeComponent();
             _context = new ApContext();
             _currentUser = loggedInUser;
+            CheckAdditionalRoles();
             LoadDashboardData();
+        }
+
+        private void CheckAdditionalRoles()
+        {
+            var userRoles = _currentUser.UserRoles.Select(ur => ur.Role.RoleName.ToUpper()).ToList();
+            if (userRoles.Contains("MANAGER")   )
+            {
+                btnSwitchToManagerView.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void SwitchToManagerView_Click(object sender, RoutedEventArgs e)
+        {
+            var managerDashboard = new ManagerDashboard(_currentUser);
+            managerDashboard.Show();
+            this.Close();
+        }
+
+        private void SwitchToEmployeeView_Click(object sender, RoutedEventArgs e)
+        {
+            var employeeDashboard = new EmployeeDashboard(_currentUser);
+            employeeDashboard.Show();
+            this.Close();
         }
 
         private void LoadDashboardData()
@@ -52,30 +78,42 @@ namespace ProjectEmployee.HR
                 txtWelcome.Text = $"Welcome, {_currentUser.Employee?.FirstName ?? _currentUser.Username}!";
                 txtTotalEmployees.Text = _context.Employees.Count().ToString();
                 txtTotalDepartments.Text = _context.Departments.Count().ToString();
-                int currentHrId = (int)_currentUser.EmployeeId;
+                var hrEmployeeIds = _context.UserRoles
+                 .Where(ur => ur.Role.RoleId == 2 && ur.User.EmployeeId != null)
+                 .Select(ur => (int)ur.User.EmployeeId)
+                 .ToList();
+
                 txtPendingRequests.Text = _context.Requests
-                    .Count(r => r.ManagerId == currentHrId && r.Status == "Pending").ToString();
+                    .Count(r => hrEmployeeIds.Contains(r.ManagerId) && r.Status == "Pending").ToString();
 
                 var thirtyDaysAgo = DateOnly.FromDateTime(DateTime.Now.AddDays(-30));
                 var newHires = _context.Employees.Where(e => e.HireDate >= thirtyDaysAgo).Count();
                 txtNewHires.Text = newHires.ToString();
-                var pendingRequestsSummary = _context.Requests
-                    .Where(r => r.ManagerId == currentHrId && r.Status == "Pending")
-                    .Include(r => r.Originator) 
-                    .OrderBy(r => r.CreatedAt)
-                    .Take(5)
-                    .Select(r => new RequestSummaryViewModel
-                    {
-                        RequestType = r.RequestType,
-                        OriginatorName = r.Originator.FirstName + " " + r.Originator.LastName,
-                        CreatedAt = r.CreatedAt
-                    })
-                    .ToList();
+                if (hrEmployeeIds.Any())
+                {
+                    var pendingRequestsSummary = _context.Requests
+                        .Where(r => hrEmployeeIds.Contains(r.ManagerId) && r.Status == "Pending")
+                        .Include(r => r.Originator)
+                        .OrderBy(r => r.CreatedAt)
+                        .Take(5)
+                        .Select(r => new RequestSummaryViewModel
+                        {
+                            RequestId = r.RequestId,
+                            RequestType = r.RequestType,
+                            OriginatorName = r.Originator.FirstName + " " + r.Originator.LastName,
+                            CreatedAt = r.CreatedAt
+                        })
+                        .ToList();
+                    lvPendingRequests.ItemsSource = pendingRequestsSummary;
+                }
+                else
+                {
+                    lvPendingRequests.ItemsSource = null;
+                }
 
-                lvPendingRequests.ItemsSource = pendingRequestsSummary;
                 lvRecentHires.ItemsSource = _context.Employees
                     .OrderByDescending(e => e.HireDate)
-                    .Include(e => e.Job) 
+                    .Include(e => e.Job)
                     .Take(5)
                     .ToList();
             }
@@ -105,19 +143,33 @@ namespace ProjectEmployee.HR
 
         private void OrgStructure_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Sẽ mở trang quản lý phòng ban, chức danh.");
-            // Ví dụ: new OrgManagementWindow(_currentUser).ShowDialog();
+            var orgWindow = new OrgManagementWindow(_currentUser);
+            orgWindow.ShowDialog();
         }
 
         private void AddEmployee_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Sẽ mở form thêm nhân viên mới.");
-            // Ví dụ: new AddEmployeeWindow().ShowDialog();
+            var addEditWindow = new AddEditEmployeeWindow(null, _currentUser);
+            addEditWindow.Owner = this;
+            addEditWindow.ShowDialog();
+            LoadDashboardData();
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
+            new LoginWindow().Show();
             this.Close();
+
+        }
+
+        private void ViewProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if ((sender as Button)?.DataContext is object item)
+            {
+                var empId = (int)item.GetType().GetProperty("EmployeeId").GetValue(item);
+                var profileWindow = new EmployeeProfileWindow(empId);
+                profileWindow.ShowDialog();
+            }
         }
     }
 }

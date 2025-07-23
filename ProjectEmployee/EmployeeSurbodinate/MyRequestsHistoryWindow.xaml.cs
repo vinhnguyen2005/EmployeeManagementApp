@@ -43,8 +43,9 @@ namespace ProjectEmployee.EmployeeSurbodinate
 
         private void LoadRequests(string statusFilter = "All")
         {
-            var query = _context.Requests
-                .Where(r => r.OriginatorId == _currentEmployee.EmployeeId);
+            var query = _context.Requests 
+                .Where(r => r.OriginatorId == _currentEmployee.EmployeeId && 
+                        r.EmployeeId == _currentEmployee.EmployeeId);
 
             if (statusFilter != "All")
             {

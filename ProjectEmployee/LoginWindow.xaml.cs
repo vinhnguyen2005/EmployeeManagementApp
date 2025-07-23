@@ -12,9 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.EntityFrameworkCore;
+using ProjectEmployee.Admin;
 using ProjectEmployee.EmployeeSurbodinate;
 using ProjectEmployee.HR;
 using ProjectEmployee.Models;
+using ProjectEmployee.Services;
 
 namespace ProjectEmployee
 {
@@ -41,47 +43,56 @@ namespace ProjectEmployee
                 return;
             }
 
-            // Dùng 'using' để tạo một context tạm thời CHỈ để xác thực
-            using var authContext = new ApContext();
+            using var context = new ApContext();
 
             try
             {
-                var user = authContext.Users
-                    .Include(u => u.Employee)
-                        .ThenInclude(emp => emp.Job) // Tải sẵn Job và Department
-                    .Include(u => u.Employee)
-                        .ThenInclude(emp => emp.Department)
+                var user = context.Users
+                    .Include(u => u.Employee) 
                     .Include(u => u.UserRoles)
                         .ThenInclude(ur => ur.Role)
                     .FirstOrDefault(u => u.Username == username);
 
                 if (user == null || user.PasswordHash != password)
                 {
+                    AuditLogger.Log("Login Failed", null, $"Failed login attempt for username: '{username}'.");
                     MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
+                if (user.IsLocked)
+                {
+                    MessageBox.Show("Your account has been locked. Please contact the administrator.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
+                if (user.Employee != null && !user.Employee.IsActive)
+                {
+                    MessageBox.Show("Your employee profile is inactive. Please contact HR.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                AuditLogger.Log("User Login", user, $"User '{user.Username}' logged in successfully.");
                 MessageBox.Show($"Welcome, {user.Username}!", "Login Successful", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 var userRoles = user.UserRoles.Select(ur => ur.Role.RoleName.ToUpper()).ToList();
 
-                // SỬA LỖI: Không truyền 'context' vào constructor của các Dashboard nữa
-                if (userRoles.Contains("HR"))
+                if (userRoles.Contains("ADMIN"))
                 {
-                    var hrDashboard = new HRDashboard(user); // Chỉ truyền user
-                    hrDashboard.Show();
+                    new AdminDashboard(user).Show();
+                    this.Close();
+                }
+                else if (userRoles.Contains("HR"))
+                {
+                    new HR.HRDashboard(user).Show();
                     this.Close();
                 }
                 else if (userRoles.Contains("MANAGER"))
                 {
-                    var managerDashboard = new ManagerDashboard(user); // Chỉ truyền user
-                    managerDashboard.Show();
+                    new ManagerDashboard(user).Show();
                     this.Close();
                 }
                 else if (userRoles.Contains("EMPLOYEE"))
                 {
-                    var employeeDashboard = new EmployeeDashboard(user); // Chỉ truyền user
-                    employeeDashboard.Show();
+                    new EmployeeSurbodinate.EmployeeDashboard(user).Show();
                     this.Close();
                 }
                 else

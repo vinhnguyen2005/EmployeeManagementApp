@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using ProjectEmployee.Formatter;
 using ProjectEmployee.Models;
 
@@ -11,12 +12,22 @@ namespace ProjectEmployee
         private readonly Employee _selectedEmployee;
         private readonly ApContext _context;
 
-        public RequestWindow(User currentUser, Employee selectedEmployee, ApContext context)
+        public RequestWindow(User currentUser, Employee selectedEmployee)
         {
             InitializeComponent();
             _currentUser = currentUser;
-            _context = context;
-            _selectedEmployee = selectedEmployee;
+            _context = new ApContext();
+            _selectedEmployee = _context.Employees
+                .Include(e => e.Job)
+                .FirstOrDefault(e => e.EmployeeId == selectedEmployee.EmployeeId);
+
+            if (_selectedEmployee == null)
+            {
+                MessageBox.Show("Could not load employee details.");
+                this.Close();
+                return;
+            }
+
             txtEmployeeName.Text = $"👤 {_selectedEmployee.FirstName} {_selectedEmployee.LastName}";
             txtEmployeeEmail.Text = $"✉️ {_selectedEmployee.Email}";
             txtEmployeeJob.Text = $"💼 {_selectedEmployee.Job.JobTitle}";
@@ -68,13 +79,27 @@ namespace ProjectEmployee
                     MessageBox.Show("Please enter a valid positive raise amount.");
                     return;
                 }
-
+                decimal newSalary = _selectedEmployee.Salary + amount;
+                if (_selectedEmployee.Job.MaxSalary.HasValue && newSalary > _selectedEmployee.Job.MaxSalary)
+                {
+                    MessageBox.Show($"The proposed new salary ({newSalary:C0}) exceeds the maximum salary ({_selectedEmployee.Job.MaxSalary:C0}) for the job title '{_selectedEmployee.Job.JobTitle}'.",
+                                    "Salary Cap Exceeded", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
                 raiseAmount = amount;
                 description += $" Requested raise amount: {raiseAmount}.";
             }
 
-            int hrApproverId = 203;
+            var hrApprover = _context.Users
+                     .Include(u => u.Employee)
+                     .FirstOrDefault(u => u.UserRoles.Any(ur => ur.Role.RoleId == 2) && u.EmployeeId != null);
 
+            if (hrApprover == null)
+            {
+                MessageBox.Show("No active HR user found to handle the request. Please contact support.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            int hrApproverId = (int)hrApprover.EmployeeId;
             var request = new Request
             {
                 OriginatorId = _currentUser.EmployeeId,

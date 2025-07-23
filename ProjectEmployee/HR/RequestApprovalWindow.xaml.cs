@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using ProjectEmployee.Services;
 
 namespace ProjectEmployee.HR
 {
@@ -36,9 +37,20 @@ namespace ProjectEmployee.HR
 
         private void LoadRequests(string statusFilter = "Pending")
         {
-            if (_currentUser.EmployeeId == null) return;
+            var hrEmployeeIds = _context.UserRoles
+                            .Where(ur => ur.Role.RoleName == "HR" && ur.User.EmployeeId != null)
+                            .Select(ur => (int)ur.User.EmployeeId)
+                            .ToList();
+
+            if (!hrEmployeeIds.Any())
+            {
+                MessageBox.Show("No HR employees found in the system to approve requests.");
+                dgRequests.ItemsSource = null;
+                return;
+            }
+
             var query = _context.Requests
-                .Where(r => r.ManagerId == _currentUser.EmployeeId);
+                .Where(r => hrEmployeeIds.Contains(r.ManagerId));
 
             if (statusFilter != "All")
             {
@@ -69,46 +81,78 @@ namespace ProjectEmployee.HR
             if ((sender as Button)?.DataContext is not HRRequestViewModel selected) return;
 
             var request = _context.Requests.Find(selected.RequestId);
-            if (request == null)
-            {
-                MessageBox.Show("Request not found.");
-                return;
-            }
+            if (request == null) return;
+            bool actionResult = false;
             switch (request.RequestType)
             {
                 case "Raise Salary":
-                    HandleRaiseSalary(request);
+                    actionResult = HandleRaiseSalary(request);
                     break;
                 case "Request Termination":
-                    HandleTermination(request);
+                    actionResult = HandleTermination(request);
                     break;
                 default:
                     request.Status = "Approved";
+                    actionResult = true;
                     break;
             }
-            _context.SaveChanges();
-            MessageBox.Show("Request Approved Successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            LoadRequests((cbStatusFilter.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Pending");
+
+            if (actionResult)
+            {
+                _context.SaveChanges();
+                MessageBox.Show("Request Approved and action executed successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                AuditLogger.Log("Approve Request", _currentUser, $"Approved '{request.RequestType}' request for Employee ID: {request.EmployeeId}");
+                LoadRequests((cbStatusFilter.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Pending");
+            }
         }
 
-        private void HandleRaiseSalary(Request request)
+
+        private bool HandleRaiseSalary(Request request)
         {
             var employee = _context.Employees.Find(request.EmployeeId);
             if (employee != null && request.RaiseAmount.HasValue)
             {
                 employee.Salary += request.RaiseAmount.Value;
                 request.Status = "Approved";
+                return true;
             }
+            return false; 
         }
 
-        private void HandleTermination(Request request)
+        private bool HandleTermination(Request request)
         {
-            var employee = _context.Employees.Find(request.EmployeeId);
-            if (employee != null)
+            var employeeToDeactivate = _context.Employees
+                .Include(emp => emp.InverseManager)
+                .FirstOrDefault(emp => emp.EmployeeId == request.EmployeeId);
+
+            if (employeeToDeactivate == null)
             {
-                employee.IsActive = false; 
-                request.Status = "Approved";
+                MessageBox.Show("Employee to be terminated not found.", "Error");
+                return false;
             }
+            bool isManager = employeeToDeactivate.InverseManager.Any();
+
+            if (isManager)
+            {
+                var reassignWindow = new ReassignManagerWindow(employeeToDeactivate, _currentUser);
+                reassignWindow.Owner = this;
+                reassignWindow.ShowDialog();
+            }
+            else
+            {
+                var result = MessageBox.Show($"Are you sure you want to deactivate {employeeToDeactivate.FullName}?",
+                                             "Confirm Deactivation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    employeeToDeactivate.IsActive = false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            request.Status = "Approved";
+            return true; 
         }
 
         private void StatusFilter_Changed(object sender, SelectionChangedEventArgs e)
