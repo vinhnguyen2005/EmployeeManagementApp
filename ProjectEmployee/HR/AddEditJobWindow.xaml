@@ -1,0 +1,32 @@
+﻿<Window x:Class="ProjectEmployee.HR.AddEditJobWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Job Information" Height="400" Width="450"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#F9FAFB">
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="txtTitle" Grid.Row="0" Text="Job Details" FontSize="22" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,20"/>
+
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Job Title" Margin="0,0,0,5"/>
+            <TextBox x:Name="txtJobTitle" Padding="8"/>
+
+            <TextBlock Text="Minimum Salary" Margin="0,15,0,5"/>
+            <TextBox x:Name="txtMinSalary" Padding="8"/>
+
+            <TextBlock Text="Maximum Salary" Margin="0,15,0,5"/>
+            <TextBox x:Name="txtMaxSalary" Padding="8"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Cancel" IsCancel="True" Width="100" Height="35" Margin="0,0,10,0"/>
+            <Button Content="Save" Click="Save_Click" Width="120" Height="35" Background="#10B981" Foreground="White" BorderThickness="0"/>
+        </StackPanel>
+    </Grid>
+</Window>
