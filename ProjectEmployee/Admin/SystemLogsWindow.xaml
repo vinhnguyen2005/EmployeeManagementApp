@@ -1,0 +1,16 @@
+﻿<Window x:Class="ProjectEmployee.Admin.SystemLogsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="System Audit Logs" Height="600" Width="1000"
+        WindowStartupLocation="CenterOwner" Background="#F5F7FA">
+    <Grid Margin="20">
+        <DataGrid x:Name="dgLogs" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="160"/>
+                <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="150"/>
+                <DataGridTextColumn Header="Action Type" Binding="{Binding ActionType}" Width="200"/>
+                <DataGridTextColumn Header="Details" Binding="{Binding Details}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

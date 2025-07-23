@@ -1,0 +1,333 @@
+﻿<Window x:Class="ProjectEmployee.Admin.AdminDashboard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Administrator Dashboard" Height="800" Width="1200"
+        WindowStartupLocation="CenterScreen" Background="#F8FAFC">
+
+    <Window.Resources>
+        <Style x:Key="AdminSidebarButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,15"/>
+            <Setter Property="Margin" Value="15,4"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style x:Key="DataGridActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#E5E7EB"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style x:Key="ModernDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#F3F4F6"/>
+            <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="#F9FAFB"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="CanUserReorderColumns" Value="False"/>
+            <Setter Property="RowHeight" Value="60"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+        <Style x:Key="ModernDataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F8FAFC"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border Background="{TemplateBinding Background}" 
+                              BorderBrush="{TemplateBinding BorderBrush}" 
+                              BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter Margin="{TemplateBinding Padding}" 
+                                          VerticalAlignment="Center" 
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernDataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Background="{TemplateBinding Background}" 
+                              BorderBrush="{TemplateBinding BorderBrush}" 
+                              BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter Margin="{TemplateBinding Padding}" 
+                                          VerticalAlignment="{TemplateBinding VerticalAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#EBF8FF"/>
+                    <Setter Property="Foreground" Value="#1E40AF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#111827">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="80" Margin="20,0">
+                    <TextBlock Text="⚙️" FontSize="24" VerticalAlignment="Center"/>
+                    <TextBlock Text="Admin Panel" Foreground="White" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="15,0,0,0"/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Top">
+                    <Button Style="{StaticResource AdminSidebarButtonStyle}" Click="UserManagement_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="👤" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text=" User Management" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource AdminSidebarButtonStyle}" Click="SystemSettings_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🛠️" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text=" System Settings" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Separator Margin="15,15" Background="#374151"/>
+                    <Button Style="{StaticResource AdminSidebarButtonStyle}" Click="SystemLogs_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔍" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text=" System Logs" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <Button Style="{StaticResource AdminSidebarButtonStyle}" Click="Logout_Click" Background="#374151" VerticalAlignment="Bottom" Margin="15">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🚪" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Logout" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </DockPanel>
+        </Border>
+
+
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="40">
+                <TextBlock x:Name="txtWelcome" Text="Welcome, Administrator!" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,30"/>
+
+                <UniformGrid Columns="3" Margin="0,0,0,30">
+                    <Border Background="White" CornerRadius="12" Padding="25" Margin="0,0,15,0">
+                        <StackPanel>
+                            <TextBlock Text="Total Users" FontSize="14" Foreground="#6B7280"/>
+                            <TextBlock x:Name="txtTotalUsers" Text="0" FontSize="32" FontWeight="Bold" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="White" CornerRadius="12" Padding="25" Margin="15,0">
+                        <StackPanel>
+                            <TextBlock Text="Locked Accounts" FontSize="14" Foreground="#6B7280"/>
+                            <TextBlock x:Name="txtLockedAccounts" Text="0" FontSize="32" FontWeight="Bold" Foreground="#DC2626" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="White" CornerRadius="12" Padding="25" Margin="15,0,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Employees without Account" FontSize="14" Foreground="#6B7280"/>
+                            <TextBlock x:Name="txtUsersToCreate" Text="0" FontSize="32" FontWeight="Bold" Foreground="#F59E0B" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+
+                <Border Background="White" CornerRadius="12" Padding="25">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,20">
+                            <TextBlock x:Name="txtActionTitle" Text="Action Required" FontSize="20" FontWeight="SemiBold"/>
+                            <Button Content="Manage All Users →" Click="UserManagement_Click" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Foreground="#3B82F6" Cursor="Hand"/>
+                        </Grid>
+
+                        <DataGrid x:Name="dgUsers" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+          Style="{StaticResource ModernDataGridStyle}"
+          ColumnHeaderStyle="{StaticResource ModernDataGridColumnHeaderStyle}"
+          CellStyle="{StaticResource ModernDataGridCellStyle}"
+          Margin="1" ClipToBounds="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Employee Name" Binding="{Binding EmployeeName}" Width="1.5*" MinWidth="180"/>
+                                <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="1.2*" MinWidth="150"/>
+                                <DataGridTextColumn Header="Roles" Binding="{Binding Roles}" Width="1.3*" MinWidth="120"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120" MinWidth="220"/>
+
+                                <DataGridTemplateColumn Header="Actions" Width="400" MinWidth="400">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                                    <Button Content="Create Account" Click="CreateAccount_Click">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button" BasedOn="{StaticResource DataGridActionButtonStyle}">
+                                                                <Setter Property="Background" Value="#3B82F6"/>
+                                                                <Setter Property="Foreground" Value="White"/>
+                                                                <Setter Property="BorderBrush" Value="#2563EB"/>
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Setter Property="MinWidth" Value="110"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding HasAccount}" Value="False">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="#2563EB"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                    <Button Content="Purge Account" Click="PurgeAccount_Click">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button" BasedOn="{StaticResource DataGridActionButtonStyle}">
+                                                                <Setter Property="Background" Value="#DC2626"/>
+                                                                <Setter Property="Foreground" Value="White"/>
+                                                                <Setter Property="BorderBrush" Value="#B91C1C"/>
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Setter Property="MinWidth" Value="110"/>
+                                                                <Style.Triggers>
+                                                                    <MultiDataTrigger>
+                                                                        <MultiDataTrigger.Conditions>
+                                                                            <Condition Binding="{Binding HasAccount}" Value="True"/>
+                                                                            <Condition Binding="{Binding IsActive}" Value="False"/>
+                                                                        </MultiDataTrigger.Conditions>
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </MultiDataTrigger>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="#B91C1C"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <StackPanel.Style>
+                                                            <Style TargetType="StackPanel">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <MultiDataTrigger>
+                                                                        <MultiDataTrigger.Conditions>
+                                                                            <Condition Binding="{Binding HasAccount}" Value="True"/>
+                                                                            <Condition Binding="{Binding IsActive}" Value="True"/>
+                                                                        </MultiDataTrigger.Conditions>
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </MultiDataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </StackPanel.Style>
+
+                                                        <Button Content="🔒 Lock" Click="ToggleLock_Click">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource DataGridActionButtonStyle}">
+                                                                    <Setter Property="Background" Value="#F59E0B"/>
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="BorderBrush" Value="#D97706"/>
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Setter Property="MinWidth" Value="70"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsLocked}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter Property="Background" Value="#D97706"/>
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
+
+                                                        <Button Content="🔓 Unlock" Click="ToggleLock_Click">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource DataGridActionButtonStyle}">
+                                                                    <Setter Property="Background" Value="#10B981"/>
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="BorderBrush" Value="#059669"/>
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Setter Property="MinWidth" Value="80"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter Property="Background" Value="#059669"/>
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
+
+                                                        <Button Content="Reset Password" Click="ResetPassword_Click">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource DataGridActionButtonStyle}">
+                                                                    <Setter Property="Background" Value="#8B5CF6"/>
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="BorderBrush" Value="#7C3AED"/>
+                                                                    <Setter Property="MinWidth" Value="105"/>
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter Property="Background" Value="#7C3AED"/>
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
+
+                                                        <Button Content="Manage Roles" Click="ManageRoles_Click">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource DataGridActionButtonStyle}">
+                                                                    <Setter Property="Background" Value="#6B7280"/>
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="BorderBrush" Value="#4B5563"/>
+                                                                    <Setter Property="MinWidth" Value="100"/>
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter Property="Background" Value="#4B5563"/>
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

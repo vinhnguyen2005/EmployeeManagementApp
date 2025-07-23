@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ProjectEmployee": {
+      "commandName": "Project",
+      "workingDirectory": "D:\\c#learning\\EmployeeApp\\EmployeeApp\\bin\\Debug"
+    }
+  }
+}

@@ -68,12 +68,10 @@
                 <DataGridTextColumn Header="Request Type" Binding="{Binding RequestType}" Width="180"/>
                 <DataGridTextColumn Header="Submitted Date" Binding="{Binding CreatedAt, StringFormat='dd/MM/yyyy'}" Width="140"/>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120"/>
-                <DataGridTextColumn Header="Manager's Comment" Binding="{Binding ManagerComment}" Width="250"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="220"/>
             </DataGrid.Columns>
         </DataGrid>
 
-        <!-- Action Buttons -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
             <Button Content="❌ Cancel Selected" Width="160" Height="40" Margin="5" Click="CancelRequest_Click"/>
             <Button Content="➕ Create New Request" Width="180" Height="40" Margin="5" Background="#2ECC71" Foreground="White" Click="CreateRequest_Click"/>

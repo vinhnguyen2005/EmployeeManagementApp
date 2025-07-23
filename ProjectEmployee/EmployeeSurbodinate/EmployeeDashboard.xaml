@@ -41,7 +41,29 @@
                         Background="Transparent" Foreground="White" BorderThickness="0"
                         Padding="20,12" Margin="10,2" FontSize="14" FontWeight="Medium"
                         HorizontalContentAlignment="Left" Cursor="Hand" Click="MyRequests_Click"/>
+                <Separator Margin="10,15,10,15" Background="#34495E"/>
+                <Button Content="👤 My Profile"
+                        Background="Transparent" Foreground="White" BorderThickness="0"
+                        Padding="20,12" Margin="10,2" FontSize="14" FontWeight="Medium"
+                        HorizontalContentAlignment="Left" Cursor="Hand" Click="MyProfile_Click"/>
+                <Button Content="📸 Check Attendance"
+                        Background="#16A34A" Foreground="White" BorderThickness="0"
+                        Padding="20,12" Margin="10,15,10,2" FontSize="14" FontWeight="Medium"
+                        HorizontalContentAlignment="Left" Cursor="Hand" Click="CheckAttendance_Click"/>
 
+                <Separator Margin="10,15,10,15" Background="#34495E"/>
+                <Button x:Name="btnReturnToPreviousView" 
+                        Click="ReturnToPreviousView_Click" 
+                        Visibility="Collapsed"
+                        Background="#3498DB" 
+                        Foreground="White" 
+                        BorderThickness="0"
+                        Padding="20,12" 
+                        Margin="10,2" 
+                        FontSize="14" 
+                        FontWeight="Medium"
+                        HorizontalContentAlignment="Left" 
+                        Cursor="Hand"/>
                 <Button Content="🚪 Logout"
                         Background="#E74C3C" Foreground="White" BorderThickness="0"
                         Padding="20,12" Margin="10,40,10,10" FontSize="14" FontWeight="Medium"
@@ -69,27 +91,26 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-
-                <!-- Statistics Cards -->
-                <UniformGrid Columns="2" Margin="0,0,0,20">
+                <UniformGrid Columns="3" Margin="0,0,0,20">
                     <Border Background="White" CornerRadius="12" Padding="20" Margin="0,0,10,0">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#E0E0E0" BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
-                        </Border.Effect>
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock Text="⏳" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                             <TextBlock x:Name="txtPendingTasks" Text="0" FontSize="24" FontWeight="Bold" Foreground="#3498DB" HorizontalAlignment="Center"/>
                             <TextBlock Text="Pending Tasks" FontSize="12" Foreground="#7F8C8D" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Border>
-                    <Border Background="White" CornerRadius="12" Padding="20" Margin="10,0,0,0">
-                        <Border.Effect>
-                            <DropShadowEffect Color="#E0E0E0" BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
-                        </Border.Effect>
+                    <Border Background="White" CornerRadius="12" Padding="20" Margin="10,0,10,0">
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock Text="📨" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                             <TextBlock x:Name="txtTotalRequests" Text="0" FontSize="24" FontWeight="Bold" Foreground="#9B59B6" HorizontalAlignment="Center"/>
                             <TextBlock Text="My Requests" FontSize="12" Foreground="#7F8C8D" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="White" CornerRadius="12" Padding="20" Margin="10,0,0,0">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="👨‍👩‍👧" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                            <TextBlock x:Name="txtDependentCount" Text="0" FontSize="24" FontWeight="Bold" Foreground="#27AE60" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Dependents" FontSize="12" Foreground="#7F8C8D" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Border>
                 </UniformGrid>

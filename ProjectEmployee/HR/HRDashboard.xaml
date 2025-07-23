@@ -57,6 +57,14 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="SidebarHeaderStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="20,0,0,5"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextDecorations" Value="Underline"/>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -140,6 +148,18 @@
                             </TextBlock>
                         </StackPanel>
                     </Button>
+                    <Separator Margin="15,20" Background="#374151"/>
+                    <TextBlock Text="SWITCH VIEW" Style="{StaticResource SidebarHeaderStyle}"/>
+
+                    <Button x:Name="btnSwitchToManagerView" Content="⚙️ Switch to Manager View" 
+                            Click="SwitchToManagerView_Click" 
+                            Style="{StaticResource SidebarButtonStyle}" 
+                            Visibility="Collapsed"/>    
+
+                    <!-- Nút này luôn hiện cho HR -->
+                    <Button x:Name="btnSwitchToEmployeeView" Content="🧑‍💻 My Personal Space" 
+        Click="SwitchToEmployeeView_Click" 
+        Style="{StaticResource SidebarButtonStyle}"/>
                 </StackPanel>
                 <Button Style="{StaticResource SidebarButtonStyle}" Click="Logout_Click" Background="#4B5563" VerticalAlignment="Bottom" Margin="15">
                     <StackPanel Orientation="Horizontal">
@@ -518,7 +538,7 @@
                                                         </TextBlock>
                                                         <TextBlock Text="{Binding Job.JobTitle}" Foreground="#6B7280" FontSize="12" Margin="0,4,0,0"/>
                                                     </StackPanel>
-                                                    <Button Grid.Column="1" Content="View Profile →" Click="EmployeeManagement_Click" Background="#DBEAFE" Foreground="#1E40AF" BorderThickness="0" Padding="10,5" Cursor="Hand" FontWeight="Medium"/>
+                                                    <Button Grid.Column="1" Content="View Profile →" Click="ViewProfile_Click" Background="#DBEAFE" Foreground="#1E40AF" BorderThickness="0" Padding="10,5" Cursor="Hand" FontWeight="Medium"/>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>

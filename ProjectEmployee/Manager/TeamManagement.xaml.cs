@@ -96,7 +96,7 @@ namespace ProjectEmployee
                 return;
             }
 
-            var requestWindow = new RequestWindow(_currentUser, employee, _context);
+            var requestWindow = new RequestWindow(_currentUser, employee);
             requestWindow.ShowDialog();
         }
 
@@ -109,7 +109,7 @@ namespace ProjectEmployee
             }
 
             var requestCount = _context.Requests
-                .Count(r => r.ManagerId == _currentUser.EmployeeId);
+                .Count(r => r.OriginatorId == _currentUser.EmployeeId);
 
             if (requestCount == 0)
             {

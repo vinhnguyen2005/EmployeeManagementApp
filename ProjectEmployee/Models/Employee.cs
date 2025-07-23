@@ -27,6 +27,14 @@ namespace ProjectEmployee.Models
         public decimal Salary { get; set; }
         public int? ManagerId { get; set; }
         public int? DepartmentId { get; set; }
+        public bool IsActive { get; set; }
+        public byte[]? FaceEncoding { get; set; }
+
+        public string? ProfilePicturePath { get; set; }
+
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}";
+
         public virtual Department? Department { get; set; }
         public virtual Job Job { get; set; } = null!;
         public virtual Employee? Manager { get; set; }
@@ -34,10 +42,6 @@ namespace ProjectEmployee.Models
         public virtual ICollection<Employee> InverseManager { get; set; }
         public virtual ICollection<TaskAssign> Tasks { get; set; }
         public virtual ICollection<User> Users { get; set; }
-        public bool IsActive { get; set; }
-
-        [NotMapped] 
-        public string FullName => $"{FirstName} {LastName}";
         public virtual ICollection<Request> RequestsSubject { get; set; }
         public virtual ICollection<Request> RequestsToApprove { get; set; }
         public virtual ICollection<Request> RequestsCreated { get; set; }

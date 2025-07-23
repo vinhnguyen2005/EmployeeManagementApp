@@ -22,6 +22,9 @@ namespace ProjectEmployee.Models
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
 
+        public virtual DbSet<AuditLog> AuditLogs { get; set; }
+        public virtual DbSet<AttendanceLog> AttendanceLogs { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             try
@@ -296,7 +299,18 @@ namespace ProjectEmployee.Models
                     .HasMaxLength(500);
 
             });
+            modelBuilder.Entity<AuditLog>(entity =>
+            {
+                entity.HasKey(e => e.LogId);
 
+                entity.ToTable("AuditLogs");
+                entity.Property(e => e.LogId).HasColumnName("LogId");
+                entity.Property(e => e.UserId).HasColumnName("UserId");
+                entity.Property(e => e.Username).HasColumnName("Username");
+                entity.Property(e => e.ActionType).HasColumnName("ActionType");
+                entity.Property(e => e.Details).HasColumnName("Details");
+                entity.Property(e => e.Timestamp).HasColumnName("Timestamp");
+            });
 
             modelBuilder.Entity<User>(entity =>
             {
