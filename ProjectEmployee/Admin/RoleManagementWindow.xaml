@@ -1,0 +1,43 @@
+﻿<Window x:Class="ProjectEmployee.Admin.RoleManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Manage User Roles" Height="450" Width="450"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#F9FAFB">
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- SỬA ĐỔI: Thêm chi tiết thông tin Employee -->
+        <Border Grid.Row="0" Background="White" CornerRadius="12" Padding="15" BorderBrush="#E5E7EB" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Ellipse Grid.Column="0" Width="60" Height="60">
+                    <Ellipse.Fill>
+                        <ImageBrush x:Name="ProfileImageBrush" Stretch="UniformToFill"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0,0,0">
+                    <TextBlock Text="Managing Roles for:" FontSize="12" Foreground="#6B7280"/>
+                    <TextBlock x:Name="txtFullName" Text="Employee Full Name" FontSize="18" FontWeight="Bold" Foreground="#1F2937"/>
+                    <TextBlock x:Name="txtJobTitle" Text="Job Title" FontSize="14" Foreground="#4B5563" Margin="0,2,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" Margin="0,20,0,0">
+            <StackPanel x:Name="spRoles"/>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Cancel" IsCancel="True" Width="100" Height="35" Margin="0,0,10,0"/>
+            <Button Content="Save Roles" Click="Save_Click" Width="120" Height="35" Background="#3B82F6" Foreground="White" BorderThickness="0"/>
+        </StackPanel>
+    </Grid>
+</Window>

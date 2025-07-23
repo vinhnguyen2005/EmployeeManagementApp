@@ -1,0 +1,41 @@
+﻿<Window x:Class="ProjectEmployee.Admin.SystemSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="System Health And Data Integrity" Height="600" Width="800"
+        WindowStartupLocation="CenterOwner" Background="#F5F7FA">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="System Health Check" FontSize="22" FontWeight="Bold" Margin="0,0,0,15"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+            <Button Content="Find Managers without MANAGER Role" Click="CheckMismatchedManagers_Click" Margin="0,0,10,0"/>
+            <Button Content="Find Users of Inactive Employees" Click="CheckInactiveEmployeeUsers_Click" Margin="0,0,10,0"/>
+            <Button Content="Find Orphaned Requests" Click="CheckOrphanedRequests_Click"/>
+        </StackPanel>
+
+        <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="15" BorderBrush="#E5E7EB" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="txtResultTitle" Grid.Row="0" Text="Results will be displayed here." FontSize="16" FontWeight="SemiBold" Margin="5,5,0,10"/>
+                <ListView x:Name="lvResults" Grid.Row="1" BorderThickness="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,5">
+                                <TextBlock Text="{Binding Description}" FontWeight="Medium"/>
+                                <TextBlock Text="{Binding Details}" Foreground="Gray" FontSize="11"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
