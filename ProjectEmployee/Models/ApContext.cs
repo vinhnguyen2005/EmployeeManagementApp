@@ -354,6 +354,17 @@ namespace ProjectEmployee.Models
                     .HasForeignKey(ur => ur.RoleId);
             });
 
+            modelBuilder.Entity<AttendanceLog>(entity =>
+            {
+                entity.ToTable("AttendanceLogs");
+                entity.HasKey(e => e.LogId);
+                entity.HasOne(d => d.Employee)
+                      .WithMany() 
+                      .HasForeignKey(d => d.EmployeeId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+
             OnModelCreatingPartial(modelBuilder);
         }
 
