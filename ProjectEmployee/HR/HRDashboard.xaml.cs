@@ -171,5 +171,12 @@ namespace ProjectEmployee.HR
                 profileWindow.ShowDialog();
             }
         }
+
+        private void AttendanceLogs_Click(object sender, RoutedEventArgs e)
+        {
+            var attendanceWindow = new AttendanceLogWindow();
+            attendanceWindow.ShowDialog();
+        }
+
     }
 }

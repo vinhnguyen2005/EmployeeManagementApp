@@ -48,7 +48,9 @@ namespace ProjectEmployee.EmployeeSurbodinate
         {
             try
             {
-                _faceRecognition = FaceRecognition.Create("model");
+                string dir = AppDomain.CurrentDomain.BaseDirectory;
+                string modelPath = Path.Combine(dir, "model");
+                _faceRecognition = FaceRecognition.Create(modelPath);
             }
             catch (Exception ex)
             {
@@ -73,7 +75,6 @@ namespace ProjectEmployee.EmployeeSurbodinate
             txtStatus.Text = "Camera initialized. Ready to check in.";
         }
 
-        // FIX 1: Explicitly use 'System.Drawing.Bitmap' to resolve ambiguity
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (_capture == null || !_capture.IsOpened) return;
@@ -89,7 +90,6 @@ namespace ProjectEmployee.EmployeeSurbodinate
             }
         }
 
-        // FIX 1 (continued): Explicitly use 'System.Drawing.Bitmap' here too
         public static BitmapImage ConvertBitmapToBitmapImage(System.Drawing.Bitmap bitmap)
         {
             using (var memory = new MemoryStream())
@@ -122,13 +122,13 @@ namespace ProjectEmployee.EmployeeSurbodinate
                     {
                         using (var img = FaceRecognition.LoadImageFile(imagePath))
                         {
-                            var encodings = _faceRecognition.FaceEncodings(img).ToList();
+                            var faceLocations = _faceRecognition.FaceLocations(img, 1, Model.Hog);
+                            var encodings = _faceRecognition.FaceEncodings(img, faceLocations).ToList();
+
                             if (encodings.Any())
                             {
-                                // FIX 2: Correct way to get the encoding data as byte[]
                                 double[] encodingArray = encodings.First().GetRawEncoding();
                                 _currentEmployee.FaceEncoding = ConvertDoubleArrayToByteArray(encodingArray);
-
                                 _context.SaveChanges();
                                 txtStatus.Text = "Profile picture analysis complete. Ready.";
                             }
@@ -167,17 +167,16 @@ namespace ProjectEmployee.EmployeeSurbodinate
                 return;
             }
 
-            // FIX 3: Explicitly define the types for the deconstruction
             (bool isSuccess, double similarity) = await Task.Run(() =>
             {
                 try
                 {
-                    // FIX 2 (continued): Correct way to load the encoding from byte[]
                     double[] knownEncodingArray = ConvertByteArrayToDoubleArray(knownEncodingData);
                     using (var knownEncoding = FaceRecognition.LoadFaceEncoding(knownEncodingArray))
                     using (var unknownImage = FaceRecognition.LoadImage(frameToProcess.ToBitmap()))
                     {
-                        var unknownEncodings = _faceRecognition.FaceEncodings(unknownImage).ToList();
+                        var faceLocations = _faceRecognition.FaceLocations(unknownImage, 1, Model.Hog);
+                        var unknownEncodings = _faceRecognition.FaceEncodings(unknownImage, faceLocations).ToList();
 
                         if (unknownEncodings.Any())
                         {
@@ -189,25 +188,34 @@ namespace ProjectEmployee.EmployeeSurbodinate
                         }
                     }
                 }
-                catch (Exception) { /* Handle or log error if needed */ }
+                catch (Exception) { }
 
                 return (false, 0.0);
             });
 
             if (isSuccess)
             {
-                txtStatus.Text = $"Check-in successful! Similarity: {similarity:F1}%";
                 LogAttendance("Success", similarity);
                 AuditLogger.Log("Attendance Check-in", _currentUser, $"Check-in successful with similarity score: {similarity:F1}%.");
+                MessageBox.Show("Check-in successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                this.Close(); 
             }
             else
             {
-                txtStatus.Text = "Face not recognized. Please try again.";
                 LogAttendance("Failed", similarity);
                 AuditLogger.Log("Attendance Check-in Failed", _currentUser, "Face not recognized during check-in attempt.");
-            }
+                var result = MessageBox.Show("Face not recognized. Would you like to try again?", "Check-in Failed", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
-            btnCheckIn.IsEnabled = true;
+                if (result == MessageBoxResult.No)
+                {
+                    this.Close(); 
+                }
+                else
+                {
+                    btnCheckIn.IsEnabled = true;
+                    txtStatus.Text = "Please try again.";
+                }
+            }
         }
 
         private void LogAttendance(string status, double similarity)
@@ -223,7 +231,6 @@ namespace ProjectEmployee.EmployeeSurbodinate
             _context.SaveChanges();
         }
 
-        // Helper methods to convert between double[] and byte[]
         private byte[] ConvertDoubleArrayToByteArray(double[] doubleArray)
         {
             var byteArray = new byte[doubleArray.Length * sizeof(double)];
