@@ -148,7 +148,15 @@
                             </TextBlock>
                         </StackPanel>
                     </Button>
+                    <Button Style="{StaticResource SidebarButtonStyle}" Click="AttendanceLogs_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🕒" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text=" Attendance Logs" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
                     <Separator Margin="15,20" Background="#374151"/>
+                    
                     <TextBlock Text="SWITCH VIEW" Style="{StaticResource SidebarHeaderStyle}"/>
 
                     <Button x:Name="btnSwitchToManagerView" Content="⚙️ Switch to Manager View" 
