@@ -132,9 +132,32 @@ namespace ProjectEmployee
                 txtPassword.Password = txtPasswordVisible.Text;
         }
 
-        private void ForgotPassword_Click(object sender, MouseButtonEventArgs e)
+        private void ForgotPassword_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            MessageBox.Show("Please contact your administrator to reset your password.", "Forgot Password", MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                ForgotPasswordWindow forgotPasswordWindow = new ForgotPasswordWindow();
+                forgotPasswordWindow.Owner = this;
+
+                bool? result = forgotPasswordWindow.ShowDialog();
+
+                if (result == true)
+                {
+
+                    txtError.Text = "Password reset successfully! Please login with your new password.";
+                    txtError.Foreground = System.Windows.Media.Brushes.Green;
+                    txtError.Visibility = Visibility.Visible;
+
+                    txtUsername.Clear();
+                    txtPassword.Clear();
+                    txtPasswordVisible.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening forgot password window: {ex.Message}",
+                               "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 using ConsoleApp.Models;
 
 namespace ConsoleApp
-{ 
-
-    class JobService
+{
+    public class JobService
     {
         private readonly EmployeeContext _context;
 
@@ -21,23 +20,27 @@ namespace ConsoleApp
         {
             return _context.Jobs.OrderBy(j => j.JobTitle).ToList();
         }
+
         public Job AddJob(string title, decimal? minSalary, decimal? maxSalary)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
                 throw new ArgumentException("Job title cannot be empty.");
             }
+
+            if (minSalary.HasValue && maxSalary.HasValue && minSalary > maxSalary)
+            {
+                throw new ArgumentException("Minimum salary cannot be greater than maximum salary.");
+            }
+
             if (minSalary.HasValue && minSalary < 0)
             {
                 throw new ArgumentException("Minimum salary cannot be negative.");
             }
+
             if (maxSalary.HasValue && maxSalary < 0)
             {
                 throw new ArgumentException("Maximum salary cannot be negative.");
-            }
-            if (minSalary.HasValue && maxSalary.HasValue && minSalary > maxSalary)
-            {
-                throw new ArgumentException("Minimum salary cannot be greater than maximum salary.");
             }
 
             var newJob = new Job
@@ -49,6 +52,7 @@ namespace ConsoleApp
 
             _context.Jobs.Add(newJob);
             _context.SaveChanges();
+
             return newJob;
         }
 
@@ -59,26 +63,32 @@ namespace ConsoleApp
             {
                 throw new KeyNotFoundException($"Job with ID {jobId} not found.");
             }
+
             if (string.IsNullOrWhiteSpace(newTitle))
             {
                 throw new ArgumentException("Job title cannot be empty.");
-            }
-            if (newMinSalary.HasValue && newMinSalary < 0)
-            {
-                throw new ArgumentException("Minimum salary cannot be negative.");
-            }
-            if (newMaxSalary.HasValue && newMaxSalary < 0)
-            {
-                throw new ArgumentException("Maximum salary cannot be negative.");
             }
             if (newMinSalary.HasValue && newMaxSalary.HasValue && newMinSalary > newMaxSalary)
             {
                 throw new ArgumentException("Minimum salary cannot be greater than maximum salary.");
             }
+
+            if (newMinSalary.HasValue && newMinSalary < 0)
+            {
+                throw new ArgumentException("Minimum salary cannot be negative.");
+            }
+
+            if (newMaxSalary.HasValue && newMaxSalary < 0)
+            {
+                throw new ArgumentException("Maximum salary cannot be negative.");
+            }
+
             jobToUpdate.JobTitle = newTitle;
             jobToUpdate.MinSalary = newMinSalary;
             jobToUpdate.MaxSalary = newMaxSalary;
+
             _context.SaveChanges();
+
             return jobToUpdate;
         }
 
@@ -100,6 +110,4 @@ namespace ConsoleApp
             _context.SaveChanges();
         }
     }
-    
-
 }
